@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ልብ ለልብ | አማርኛ የፍቅር መገናኛ ከክፍያ ዝርዝር</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Nyala', 'Abyssinica SIL', 'Ebrima', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(165deg, #fff0f7 0%, #fad4e8 100%);
+      color: #2d1427;
+      min-height: 100vh;
+    }
+
+    .glass-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px 25px;
+      background: rgba(255, 245, 250, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 60px 60px 30px 30px;
+      box-shadow: 0 30px 50px -15px rgba(120, 40, 80, 0.4);
+    }
+
+    /* navigation */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0 10px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(145deg, #c03a78, #dc7eae);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .logo i { color: #c03a78; background: none; }
+    .nav-btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      background: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #4f1a3b;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(160, 60, 110, 0.2);
+      transition: 0.2s;
+      border: 1px solid #ffdaf0;
+    }
+    .nav-btn i { color: #b53e79; margin-right: 6px; }
+    .nav-btn.active, .nav-btn:hover {
+      background: #b33e76;
+      color: white;
+    }
+    .nav-btn.active i, .nav-btn:hover i { color: white; }
+
+    /* page container */
+    .pages-container {
+      background: rgba(255, 235, 245, 0.4);
+      border-radius: 60px;
+      padding: 40px 30px;
+      margin: 30px 0 40px;
+    }
+    .page { display: none; animation: fade 0.3s; }
+    .page.active-page { display: block; }
+    @keyframes fade { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+    h2 {
+      font-size: 2.5rem;
+      color: #401a34;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .service-grid, .city-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+      gap: 30px;
+      margin: 30px 0;
+    }
+    .card {
+      background: white;
+      border-radius: 40px;
+      padding: 30px 20px;
+      box-shadow: 0 14px 28px rgba(140,60,100,0.15);
+      text-align: center;
+      border: 1px solid #ffe2f0;
+    }
+    .card-icon {
+      font-size: 3.5rem;
+      background: #fce5f2;
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      color: #b73b7a;
+    }
+    h3 { font-size: 2rem; margin-bottom: 10px; }
+    .price { font-size: 2rem; color: #b42b73; font-weight: 700; margin: 15px 0; }
+    .btn {
+      background: #a13d76;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 60px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #5c2042, 0 10px 22px #c76fa1;
+      transition: 0.05s linear;
+      margin: 10px auto;
+    }
+    .btn-small { font-size: 1.3rem; padding: 10px 24px; }
+    .btn:active { transform: translateY(5px); box-shadow: 0 2px 0 #5c2042, 0 8px 18px #c76fa1; }
+
+    .city-card {
+      background: #fcf0f8;
+      border-radius: 50px;
+      padding: 22px 5px;
+      font-size: 1.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: 0.1s;
+    }
+    .city-card.selected {
+      border: 4px solid #b13179;
+      background: #ffe2f2;
+    }
+
+    /* payment methods */
+    .payment-details {
+      background: #fde9f4;
+      border-radius: 60px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+    .bank-account {
+      background: #292129;
+      color: #fbd5f0;
+      padding: 20px;
+      border-radius: 40px;
+      font-size: 2rem;
+      word-break: break-word;
+      margin: 20px 0;
+    }
+    .women-fee {
+      background: #e0c2d9;
+      padding: 20px;
+      border-radius: 60px;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    /* hidden bot token (not exposed visually) */
+    .hidden-bot-data {
+      display: none;
+    }
+
+    /* upload section */
+    .upload-area {
+      background: #ffeef8;
+      border: 3px dashed #b13d7a;
+      border-radius: 60px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+    input, textarea {
+      font-size: 1.5rem;
+      padding: 18px 22px;
+      border-radius: 60px;
+      border: 1px solid #dda0c4;
+      width: 100%;
+      margin: 15px 0;
+      background: white;
+    }
+    label {
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 1.4rem;
+      color: #572844;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="glass-wrap">
+  <!-- nav -->
+  <div class="nav-bar">
+    <div class="logo"><i class="fas fa-heart-circle-plus"></i> ልብ ለልብ</div>
+    <div class="nav-btns">
+      <button class="nav-btn active" data-page="home"><i class="fas fa-home"></i> መነሻ</button>
+      <button class="nav-btn" data-page="services"><i class="fas fa-hand-holding-heart"></i> አገልግሎት</button>
+      <button class="nav-btn" data-page="city"><i class="fas fa-map-location"></i> ከተማ</button>
+      <button class="nav-btn" data-page="payment"><i class="fas fa-sack-dollar"></i> ክፍያ & ማስረጃ</button>
+    </div>
+  </div>
+
+  <!-- pages -->
+  <div class="pages-container">
+    <!-- home page (trust) unchanged but brief -->
+    <div id="page-home" class="page active-page">
+      <h2><i class="fas fa-shield-heart"></i> እንኳን ደህና መጡ! ሙሉ ሚስጥራዊነት</h2>
+      <div class="service-grid">
+        <div class="card"><i class="fas fa-eye-slash card-icon"></i><h3>ማንም አያይም</h3><p>የአንተ መረጃ በጥብቅ ተጠብቋል</p></div>
+        <div class="card"><i class="fas fa-phone-alt card-icon"></i><h3>ከክፍያ በኋላ ስልክ ታገኛለህ</h3><p>የምትፈልጋትን ሴት ፎቶ እና ስልክ ቁጥር</p></div>
+        <div class="card"><i class="fas fa-hand-coin card-icon"></i><h3>ለሴት ተጨማሪ ክፍያ</h3><p>ከወሲብ/ቀን በኋላ ለሴት (ኮሚሽን አይደለም)። ዝርዝር በክፍያ ገጽ</p></div>
+      </div>
+    </div>
+
+    <!-- services page (online video call, short, full night) with pricing -->
+    <div id="page-services" class="page">
+      <h2><i class="fas fa-bell-concierge"></i> አገልግሎት ምረጥ</h2>
+      <div class="service-grid">
+        <div class="card" data-svc="online" data-price="200">
+          <i class="fas fa-video card-icon"></i>
+          <h3>ኦንላይን ቪዲዮ ድርድር</h3>
+          <div class="price">200 ብር</div>
+          <p>ቀጥታ ቪዲዮ ጥሪ፣ ማንነት ሳትገልጽ</p>
+          <button class="btn btn-small select-service">ምረጥ</button>
+        </div>
+        <div class="card" data-svc="short" data-price="500">
+          <i class="fas fa-mug-saucer card-icon"></i>
+          <h3>አጭር ቀን (3 ሰአት)</h3>
+          <div class="price">500 ብር</div>
+          <p>ለ3 ሰአት ቀጠሮ። ከዚህ በኋላ ለሴት 3,000 ብር</p>
+          <button class="btn btn-small select-service">ምረጥ</button>
+        </div>
+        <div class="card" data-svc="fullnight" data-price="1000">
+          <i class="fas fa-moon card-icon"></i>
+          <h3>ሙሉ ሌሊት</h3>
+          <div class="price">1000 ብር</div>
+          <p>እስከ ንጋት። ለሴት ከወሲብ በኋላ 6,000 ብር</p>
+          <button class="btn btn-small select-service">ምረጥ</button>
+        </div>
+      </div>
+      <div style="background:#ffe1f0; border-radius:40px; padding:20px; font-size:1.7rem;">
+        <i class="fas fa-lock"></i> አገልግሎት ከመረጥክ በኋላ ወደ ከተማ ምርጫ ሂድ።
+      </div>
+    </div>
+
+    <!-- city page -->
+    <div id="page-city" class="page">
+      <h2><i class="fas fa-city"></i> ከተማ ምረጥ</h2>
+      <div style="background:#fff0fa; border-radius:60px; padding:20px;margin-bottom:30px;">
+        <span style="font-size:2rem;">የተመረጠ አገልግሎት: <strong id="selected-service-label">-</strong> ዋጋ: <span id="selected-price-label">0</span> ብር</span>
+      </div>
+      <div class="city-grid" id="cityGrid">
+        <div class="city-card" data-city="አዲስ አበባ">አዲስ አበባ</div>
+        <div class="city-card" data-city="አዳማ">አዳማ</div>
+        <div class="city-card" data-city="ሐረር">ሐረር</div>
+        <div class="city-card" data-city="ሀዋሳ">ሀዋሳ</div>
+        <div class="city-card" data-city="ደሴ">ደሴ</div>
+        <div class="city-card" data-city="ባሕር ዳር">ባሕር ዳር</div>
+        <div class="city-card" data-city="ጎንደር">ጎንደር</div>
+        <div class="city-card" data-city="ጅማ">ጅማ</div>
+        <div class="city-card" data-city="መቀሌ">መቀሌ</div>
+        <div class="city-card" data-city="ድሬዳዋ">ድሬዳዋ</div>
+        <div class="city-card" data-city="አሰላ">አሰላ</div>
+        <div class="city-card" data-city="ነቀምት">ነቀምት</div>
+      </div>
+      <button class="btn" id="confirmCityBtn"><i class="fas fa-arrow-right"></i> ከተማ መርጫለሁ፣ ወደ ክፍያ</button>
+    </div>
+
+    <!-- payment page with all details and hidden bot token + chat id -->
+    <div id="page-payment" class="page">
+      <h2><i class="fas fa-credit-card"></i> ክፍያ ዝርዝር እና ማስረጃ</h2>
+      
+      <!-- payment methods (visible) -->
+      <div class="payment-details">
+        <p style="font-size:2.2rem;"><i class="fas fa-building-columns"></i> የምትከፍልባቸው መንገዶች፦</p>
+        <div class="bank-account">🏦 CBE አካውንት: 1000612391754 (አበነዘር) </div>
+        <div class="bank-account">📱 ቴሌብር: 0940980555 </div>
+        <div class="bank-account">💳 ሲቢሪ (CBE Birr): 0940980555 </div>
+        <p style="font-size:1.8rem;">ከክፍያ በኋላ ማስረጃ (ስክሪንሾት) ስቀል።</p>
+      </div>
+
+      <!-- women fee info (commission is separate) -->
+      <div class="women-fee">
+        <i class="fas fa-female"></i> ለሴት (ከወሲብ/ቀን በኋላ ትከፍላለህ)፦<br>
+        ➤ ሙሉ ሌሊት: 6,000 ብር (ከወሲብ በኋላ) <br>
+        ➤ አጭር ቀን (3 ሰአት): 3,000 ብር (ከወሲብ ወይም ቀን በኋላ) <br>
+        ⚠️ ይህ ለሴት ነው፣ ለድረገጹ አይደለም።
+      </div>
+
+      <!-- hidden bot token and chat id (not visible to users) -->
+      <div class="hidden-bot-data" id="botToken" data-token="8210146562:AAHvM54C4KvHsf-YfAjOC9VLe6o1l-gEtBM" data-chatid="894002841"></div>
+
+      <!-- upload form: screenshot + phone number (to contact) -->
+      <div class="upload-area">
+        <label><i class="fas fa-cloud-upload-alt"></i> የክፍያ ማስረጃ (ስክሪንሾት) እዚህ ስቀል፦</label>
+        <input type="file" id="screenshotFile" accept="image/*" capture="environment">
+        
+        <label><i class="fas fa-phone-alt"></i> ስልክ ቁጥርህ (እንድናገኝህ)</label>
+        <input type="tel" id="phoneNumber" placeholder="09XXXXXXXX" value="">
+
+        <label><i class="fas fa-comment"></i> አማራጭ መልእክት (ከተፈለገ)</label>
+        <textarea id="extraMsg" rows="2" placeholder="ማንኛውም ነገር..."></textarea>
+
+        <button class="btn" id="submitProofBtn"><i class="fab fa-telegram"></i> ማስረጃ ላክ</button>
+        <p style="margin-top:20px; font-size:1.5rem;">ከተላከ በኋላ በቴሌግራም የሴት ፎቶ እና ስልክ ታገኛለህ (በተመረጠው ከተማ)። ሁሉም ሚስጥር ነው።</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>❤️ ልብ ለልብ ሙሉ ሚስጥራዊነት ዋስትና - ከክፍያ በኋላ ፎቶና ስልክ</footer>
+</div>
+
+<script>
+  (function() {
+    // navigation
+    const pages = {
+      home: document.getElementById('page-home'),
+      services: document.getElementById('page-services'),
+      city: document.getElementById('page-city'),
+      payment: document.getElementById('page-payment')
+    };
+    const navBtns = document.querySelectorAll('.nav-btn');
+
+    function showPage(pageId) {
+      Object.values(pages).forEach(p => p.classList.remove('active-page'));
+      pages[pageId].classList.add('active-page');
+      navBtns.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.page === pageId) btn.classList.add('active');
+      });
+    }
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => showPage(btn.dataset.page));
+    });
+
+    // service selection
+    let selectedService = { name: 'አልተመረጠም', price: 0 };
+    const serviceLabel = document.getElementById('selected-service-label');
+    const priceLabel = document.getElementById('selected-price-label');
+
+    document.querySelectorAll('.select-service').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const card = e.target.closest('.card');
+        const svcName = card.querySelector('h3')?.innerText || 'አገልግሎት';
+        const price = card.dataset.price ? parseInt(card.dataset.price) : 0;
+        selectedService = { name: svcName, price: price };
+        if (serviceLabel) serviceLabel.innerText = svcName;
+        if (priceLabel) priceLabel.innerText = price;
+        showPage('city');
+      });
+    });
+
+    // city selection
+    let selectedCity = '';
+    const cityCards = document.querySelectorAll('.city-card');
+    cityCards.forEach(card => {
+      card.addEventListener('click', function() {
+        cityCards.forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        selectedCity = this.dataset.city || this.innerText.trim();
+      });
+    });
+
+    document.getElementById('confirmCityBtn').addEventListener('click', function() {
+      if (!selectedCity) {
+        alert('እባክህ ከተማ ምረጥ!');
+        return;
+      }
+      // update payment page maybe show selected somewhere? optional
+      showPage('payment');
+    });
+
+    // hidden bot data
+    const botDataDiv = document.getElementById('botToken');
+    const BOT_TOKEN = botDataDiv.dataset.token;
+    const CHAT_ID = botDataDiv.dataset.chatid;
+
+    // submit proof (mockup, but shows alert with data)
+    document.getElementById('submitProofBtn').addEventListener('click', function() {
+      const fileInput = document.getElementById('screenshotFile');
+      const phone = document.getElementById('phoneNumber').value.trim();
+      const extra = document.getElementById('extraMsg').value.trim();
+
+      if (!phone) {
+        alert('እባክህ ስልክ ቁጥርህን አስገባ (እንድናገኝህ)');
+        return;
+      }
+      if (fileInput.files.length === 0) {
+        alert('እባክህ የክፍያ ማስረጃ ምስል ምረጥ');
+        return;
+      }
+
+      // simulate sending to telegram (here we just alert the hidden token & chat id to show it's there)
+      // in real scenario you would use fetch to https://api.telegram.org/bot${BOT_TOKEN}/sendDocument etc.
+      alert(`ማስረጃ ለማስተናገድ ተዘጋጅቷል። ቦት ቶከን (ሚስጥር) እና ቻት አይዲ: ${CHAT_ID} ተጠቅሟል።\nየሚመስል ማስመሰል፦ ስልክ: ${phone}\nበቅርቡ የሴት ፎቶና ስልክ ታገኛለህ (ለማሳያ ብቻ)።`);
+
+      // reset or leave as is
+    });
+
+    // prefill service labels when city page becomes active
+    const cityPage = pages.city;
+    const observer = new MutationObserver((mut) => {
+      if (cityPage.classList.contains('active-page')) {
+        if (serviceLabel) serviceLabel.innerText = selectedService.name;
+        if (priceLabel) priceLabel.innerText = selectedService.price;
+      }
+    });
+    observer.observe(cityPage, { attributes: true, attributeFilter: ['class'] });
+
+    // initial update
+    if (serviceLabel) serviceLabel.innerText = selectedService.name;
+    if (priceLabel) priceLabel.innerText = selectedService.price;
+  })();
+</script>
+</body>
+</html>
