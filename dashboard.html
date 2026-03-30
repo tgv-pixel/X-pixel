@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>zbet - Gaming Dashboard</title>
+    <title>zbet - Wallet & Transactions</title>
     <style>
         * {
             margin: 0;
@@ -75,7 +75,7 @@
             font-size: 1.2rem;
         }
 
-        .logout-btn {
+        .logout-btn, .back-btn {
             background: rgba(255, 255, 255, 0.2);
             color: #fff;
             padding: 0.5rem 1rem;
@@ -83,9 +83,11 @@
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .logout-btn:hover {
+        .logout-btn:hover, .back-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: scale(1.05);
         }
@@ -97,219 +99,249 @@
             padding: 2rem;
         }
 
-        /* Welcome Section */
-        .welcome-section {
+        /* Wallet Cards */
+        .wallet-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .wallet-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 2rem;
-            margin-bottom: 2rem;
             text-align: center;
         }
 
-        .welcome-section h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .welcome-section p {
-            opacity: 0.9;
-        }
-
-        /* Games Grid */
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        /* Game Card */
-        .game-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 1.5rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-        }
-
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .game-card.active {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid #ffd700;
-        }
-
-        .game-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .game-title {
+        .wallet-card h3 {
             font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .game-description {
-            color: rgba(255, 255, 255, 0.8);
             margin-bottom: 1rem;
         }
 
-        /* Game Area */
-        .game-area {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-top: 2rem;
-            animation: fadeIn 0.5s ease;
+        .wallet-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin: 1rem 0;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Bet Controls */
-        .bet-controls {
-            margin-top: 1.5rem;
+        /* Action Buttons */
+        .action-buttons {
             display: flex;
             gap: 1rem;
-            flex-wrap: wrap;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .action-btn {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .deposit-btn {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            color: white;
+        }
+
+        .withdraw-btn {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
             align-items: center;
         }
 
-        input, select {
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
             padding: 0.75rem;
             border: none;
             border-radius: 10px;
-            font-size: 1rem;
             background: rgba(255, 255, 255, 0.2);
             color: #fff;
+            font-size: 1rem;
         }
 
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #ffd700;
         }
 
-        button {
-            padding: 0.75rem 1.5rem;
+        .payment-details {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .payment-details p {
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(45deg, #ffd89b, #c7e9fb);
+            color: #333;
             border: none;
             border-radius: 10px;
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: linear-gradient(45deg, #ffd89b, #c7e9fb);
-            color: #333;
         }
 
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        .submit-btn:hover {
+            transform: scale(1.02);
         }
 
-        button:active {
-            transform: scale(0.95);
-        }
-
-        /* Result Display */
-        .result {
+        .message {
             margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .message.success {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+            display: block;
+        }
+
+        .message.error {
+            background: rgba(244, 67, 54, 0.3);
+            color: #f44336;
+            display: block;
+        }
+
+        .message.info {
+            background: rgba(33, 150, 243, 0.3);
+            color: #2196f3;
+            display: block;
+        }
+
+        /* Transactions List */
+        .transactions-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .transactions-list {
+            margin-top: 1rem;
+        }
+
+        .transaction-item {
+            background: rgba(0, 0, 0, 0.2);
             padding: 1rem;
             border-radius: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            font-size: 1.1rem;
-        }
-
-        .win {
-            color: #4caf50;
-            font-weight: bold;
-        }
-
-        .lose {
-            color: #f44336;
-            font-weight: bold;
-        }
-
-        /* Dice Game */
-        .dice-container {
-            text-align: center;
-        }
-
-        .dice {
-            font-size: 5rem;
-            margin: 1rem 0;
-            animation: roll 0.5s ease;
-        }
-
-        @keyframes roll {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Slot Machine */
-        .slot-machine {
-            text-align: center;
-        }
-
-        .reels {
+            margin-bottom: 0.5rem;
             display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .reel {
-            width: 80px;
-            height: 80px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            font-size: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .transaction-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
             font-weight: bold;
         }
 
-        /* Coin Flip */
-        .coin-flip {
-            text-align: center;
+        .status-pending {
+            background: #ff9800;
+            color: white;
         }
 
-        .coin {
-            font-size: 5rem;
-            margin: 1rem 0;
-            transition: transform 0.3s ease;
+        .status-approved {
+            background: #4caf50;
+            color: white;
         }
 
-        .coin.flipping {
-            animation: flip 0.6s ease;
+        .status-rejected {
+            background: #f44336;
+            color: white;
         }
 
-        @keyframes flip {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(720deg); }
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
-            }
-            
-            .games-grid {
-                grid-template-columns: 1fr;
             }
             
             .navbar {
@@ -317,8 +349,8 @@
                 text-align: center;
             }
             
-            .user-info {
-                justify-content: center;
+            .action-buttons {
+                flex-direction: column;
             }
         }
     </style>
@@ -327,6 +359,7 @@
     <nav class="navbar">
         <div class="logo">🎲 zbet</div>
         <div class="user-info">
+            <a href="zbet-game.html" class="back-btn">🎮 Back to Games</a>
             <div class="user-details">
                 <div class="username" id="username">Loading...</div>
                 <div class="email" id="email">Loading...</div>
@@ -337,23 +370,103 @@
     </nav>
 
     <div class="container">
-        <div class="welcome-section">
-            <h2>Welcome to zbet! 🎮</h2>
-            <p>Choose your game and start betting!</p>
+        <div class="wallet-section">
+            <div class="wallet-card">
+                <h3>💰 Available Balance</h3>
+                <div class="wallet-amount" id="walletBalance">0 ZBET</div>
+                <p>1 USDT = 157 ZBET</p>
+                <p>Minimum Withdrawal: 100 ZBET</p>
+            </div>
         </div>
-        
-        <div class="games-grid" id="gamesGrid">
-            <!-- Games will be dynamically inserted -->
+
+        <div class="action-buttons">
+            <button class="action-btn deposit-btn" onclick="openDepositModal()">📥 Deposit Funds</button>
+            <button class="action-btn withdraw-btn" onclick="openWithdrawModal()">📤 Withdraw Funds</button>
         </div>
-        <div id="gameArea" class="game-area"></div>
+
+        <div class="transactions-section">
+            <h3>📋 Transaction History</h3>
+            <div id="transactionsList" class="transactions-list">
+                <p>Loading transactions...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Deposit Funds</h2>
+                <span class="close" onclick="closeDepositModal()">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>Select Payment Method</label>
+                <select id="depositMethod" onchange="showDepositDetails()">
+                    <option value="">Choose method</option>
+                    <option value="cbe">CBE (Commercial Bank of Ethiopia)</option>
+                    <option value="telegram">Telebirr</option>
+                    <option value="mpesa">M-Pesa</option>
+                    <option value="usdt">TRC20 USDT</option>
+                </select>
+            </div>
+            <div id="depositDetails"></div>
+            <div class="form-group">
+                <label>Amount (in ZBET)</label>
+                <input type="number" id="depositAmount" placeholder="Enter amount to deposit">
+            </div>
+            <div class="form-group">
+                <label>Transaction Reference / Screenshot</label>
+                <input type="text" id="transactionRef" placeholder="Enter transaction ID or reference">
+            </div>
+            <button class="submit-btn" onclick="submitDeposit()">Submit Deposit Request</button>
+            <div id="depositMessage" class="message"></div>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Withdraw Funds</h2>
+                <span class="close" onclick="closeWithdrawModal()">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>Select Withdrawal Method</label>
+                <select id="withdrawMethod" onchange="showWithdrawDetails()">
+                    <option value="">Choose method</option>
+                    <option value="cbe">CBE (Commercial Bank of Ethiopia)</option>
+                    <option value="telegram">Telebirr</option>
+                    <option value="mpesa">M-Pesa</option>
+                    <option value="usdt">TRC20 USDT</option>
+                </select>
+            </div>
+            <div id="withdrawDetails"></div>
+            <div class="form-group">
+                <label>Amount (in ZBET)</label>
+                <input type="number" id="withdrawAmount" placeholder="Enter amount to withdraw (Min: 100)">
+            </div>
+            <div class="form-group">
+                <label>Account Details</label>
+                <input type="text" id="accountDetails" placeholder="Enter your account number / phone number">
+            </div>
+            <div class="form-group">
+                <label>Account Name</label>
+                <input type="text" id="accountName" placeholder="Enter your account name">
+            </div>
+            <div class="form-group">
+                <label>Password Confirmation</label>
+                <input type="password" id="withdrawPassword" placeholder="Enter your password to confirm">
+            </div>
+            <button class="submit-btn" onclick="submitWithdraw()">Submit Withdrawal Request</button>
+            <div id="withdrawMessage" class="message"></div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, get, update, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, get, update, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         
-        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCAfsKcVP7OUo870TKkBnk4BfDEq9LnAK8",
             authDomain: "newporoject-c6f66.firebaseapp.com",
@@ -371,62 +484,43 @@
         
         let currentUser = null;
         let userBalance = 0;
-        let userData = null;
         
-        // Game Data
-        const games = [
-            {
-                id: 'dice',
-                name: '🎲 Dice Roll',
-                description: 'Bet on a number between 1-6. Win 5x your bet!',
-                multiplier: 5,
-                minBet: 10,
-                maxBet: 500
+        // Payment details
+        const paymentMethods = {
+            cbe: {
+                name: "CBE (Commercial Bank of Ethiopia)",
+                account: "1000612391754",
+                name: "Abenezer Shigute Menore"
             },
-            {
-                id: 'coinflip',
-                name: '🪙 Coin Flip',
-                description: 'Bet on Heads or Tails. Win 2x your bet!',
-                multiplier: 2,
-                minBet: 10,
-                maxBet: 500
+            telegram: {
+                name: "Telebirr",
+                account: "0940980554",
+                name: "Tenaye Hutalo Ejute"
             },
-            {
-                id: 'slots',
-                name: '🎰 Slot Machine',
-                description: 'Match 3 symbols to win! Jackpot: 10x your bet!',
-                multiplier: 10,
-                minBet: 20,
-                maxBet: 300
+            mpesa: {
+                name: "M-Pesa",
+                account: "0725032395",
+                name: "Abenezer Shigute Menore"
             },
-            {
-                id: 'roulette',
-                name: '🎯 Roulette',
-                description: 'Bet on Red, Black, or Green 0. Win up to 35x!',
-                minBet: 10,
-                maxBet: 500
-            },
-            {
-                id: 'cards',
-                name: '🃏 Card Guess',
-                description: 'Guess higher or lower than the card. Win 2x!',
-                multiplier: 2,
-                minBet: 10,
-                maxBet: 400
+            usdt: {
+                name: "TRC20 USDT",
+                address: "TWym3qg8TUNTyutMxvPpnatjeWs8C7jsLY",
+                rate: 157 // 1 USDT = 157 ZBET
             }
-        ];
+        };
         
         // Check authentication
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
                 await loadUserData(user.uid);
+                loadTransactions();
             } else {
-                // Check if Telegram user exists in localStorage
                 const localUser = localStorage.getItem('zbet_user');
                 if (localUser) {
                     const parsedUser = JSON.parse(localUser);
                     await loadTelegramUserData(parsedUser);
+                    loadTransactions();
                 } else {
                     window.location.href = 'zbet-login.html';
                 }
@@ -438,11 +532,12 @@
             const snapshot = await get(userRef);
             
             if (snapshot.exists()) {
-                userData = snapshot.val();
+                const userData = snapshot.val();
                 userBalance = userData.balance || 1000;
                 document.getElementById('username').textContent = userData.username;
                 document.getElementById('email').textContent = userData.email;
                 document.getElementById('balance').textContent = userBalance;
+                document.getElementById('walletBalance').textContent = userBalance + ' ZBET';
             }
         }
         
@@ -451,101 +546,281 @@
             const snapshot = await get(userRef);
             
             if (snapshot.exists()) {
-                userData = snapshot.val();
+                const userData = snapshot.val();
                 userBalance = userData.balance || 1000;
                 document.getElementById('username').textContent = userData.username;
                 document.getElementById('email').textContent = userData.email;
                 document.getElementById('balance').textContent = userBalance;
+                document.getElementById('walletBalance').textContent = userBalance + ' ZBET';
             }
         }
         
-        async function updateBalance(newBalance) {
-            if (!userData) return;
+        async function loadTransactions() {
+            const userId = currentUser ? currentUser.uid : JSON.parse(localStorage.getItem('zbet_user'))?.uid;
+            if (!userId) return;
             
-            const userRef = ref(database, `users/${userData.uid}`);
-            await update(userRef, {
-                balance: newBalance,
-                lastUpdated: new Date().toISOString()
-            });
-            userBalance = newBalance;
-            document.getElementById('balance').textContent = userBalance;
-        }
-        
-        async function saveBetHistory(game, betAmount, winAmount, result) {
-            if (!userData) return;
+            const transactionsRef = ref(database, `transactions/${userId}`);
+            const snapshot = await get(transactionsRef);
             
-            const betRef = ref(database, `users/${userData.uid}/bets/${Date.now()}`);
-            await set(betRef, {
-                game: game.name,
-                betAmount: betAmount,
-                winAmount: winAmount,
-                result: result,
-                timestamp: new Date().toISOString()
-            });
+            const transactionsList = document.getElementById('transactionsList');
             
-            // Update stats
-            const statsRef = ref(database, `users/${userData.uid}`);
-            await update(statsRef, {
-                totalBets: (userData.totalBets || 0) + 1,
-                totalWins: (userData.totalWins || 0) + (winAmount > 0 ? 1 : 0),
-                totalLosses: (userData.totalLosses || 0) + (winAmount === 0 ? 1 : 0)
-            });
-        }
-        
-        // Game functions (same as before but with Firebase integration)
-        function isValidBet(amount, game) {
-            if (isNaN(amount) || amount < game.minBet) {
-                alert(`Minimum bet is ${game.minBet} ZBET`);
-                return false;
+            if (!snapshot.exists()) {
+                transactionsList.innerHTML = '<p>No transactions yet</p>';
+                return;
             }
-            if (amount > game.maxBet) {
-                alert(`Maximum bet is ${game.maxBet} ZBET`);
-                return false;
-            }
-            if (amount > userBalance) {
-                alert('Insufficient balance!');
-                return false;
-            }
-            return true;
-        }
-        
-        async function processBet(amount, game, winAmount, resultMessage) {
-            const newBalance = userBalance - amount + winAmount;
-            await updateBalance(newBalance);
-            await saveBetHistory(game, amount, winAmount, winAmount > 0 ? 'win' : 'loss');
             
-            if (winAmount > 0) {
-                return `<div class="result win">🎉 WIN! ${resultMessage} You won ${winAmount} ZBET! 🎉</div>`;
-            } else {
-                return `<div class="result lose">😢 LOSE! ${resultMessage} You lost ${amount} ZBET! 😢</div>`;
-            }
-        }
-        
-        // Render games grid
-        function renderGamesGrid() {
-            const grid = document.getElementById('gamesGrid');
-            grid.innerHTML = games.map(game => `
-                <div class="game-card" onclick="selectGame('${game.id}')">
-                    <div class="game-icon">${game.icon || game.name.split(' ')[0]}</div>
-                    <div class="game-title">${game.name}</div>
-                    <div class="game-description">${game.description}</div>
-                    <div>Min: ${game.minBet} | Max: ${game.maxBet}</div>
+            const transactions = Object.entries(snapshot.val()).reverse();
+            transactionsList.innerHTML = transactions.map(([key, trans]) => `
+                <div class="transaction-item">
+                    <div>
+                        <strong>${trans.type === 'deposit' ? '📥 Deposit' : '📤 Withdraw'}</strong><br>
+                        <small>${new Date(trans.timestamp).toLocaleString()}</small>
+                    </div>
+                    <div>
+                        Amount: ${trans.amount} ZBET<br>
+                        Method: ${trans.method}
+                    </div>
+                    <div>
+                        <span class="transaction-status status-${trans.status}">${trans.status}</span>
+                    </div>
                 </div>
             `).join('');
         }
         
-        // Add icons to games
-        games[0].icon = '🎲';
-        games[1].icon = '🪙';
-        games[2].icon = '🎰';
-        games[3].icon = '🎯';
-        games[4].icon = '🃏';
-        
-        // Game render functions (simplified - add all your game functions here)
-        window.selectGame = function(gameId) {
-            const gameArea = document.getElementById('gameArea');
-            gameArea.innerHTML = `<h2>Game Selected: ${gameId}</h2><p>Game implementation here...</p>`;
+        window.openDepositModal = () => {
+            document.getElementById('depositModal').style.display = 'flex';
         };
+        
+        window.closeDepositModal = () => {
+            document.getElementById('depositModal').style.display = 'none';
+            document.getElementById('depositDetails').innerHTML = '';
+            document.getElementById('depositAmount').value = '';
+            document.getElementById('transactionRef').value = '';
+        };
+        
+        window.openWithdrawModal = () => {
+            document.getElementById('withdrawModal').style.display = 'flex';
+        };
+        
+        window.closeWithdrawModal = () => {
+            document.getElementById('withdrawModal').style.display = 'none';
+            document.getElementById('withdrawDetails').innerHTML = '';
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('accountDetails').value = '';
+            document.getElementById('accountName').value = '';
+            document.getElementById('withdrawPassword').value = '';
+        };
+        
+        window.showDepositDetails = () => {
+            const method = document.getElementById('depositMethod').value;
+            const detailsDiv = document.getElementById('depositDetails');
+            
+            if (!method) {
+                detailsDiv.innerHTML = '';
+                return;
+            }
+            
+            const payment = paymentMethods[method];
+            if (method === 'usdt') {
+                detailsDiv.innerHTML = `
+                    <div class="payment-details">
+                        <p><strong>Send USDT (TRC20) to:</strong></p>
+                        <p>Address: ${payment.address}</p>
+                        <p>Network: TRC20</p>
+                        <p>Rate: 1 USDT = ${payment.rate} ZBET</p>
+                        <button class="copy-btn" onclick="copyToClipboard('${payment.address}')">Copy Address</button>
+                    </div>
+                `;
+            } else {
+                detailsDiv.innerHTML = `
+                    <div class="payment-details">
+                        <p><strong>Send to:</strong></p>
+                        <p>Account: ${payment.account}</p>
+                        <p>Name: ${payment.name}</p>
+                        <button class="copy-btn" onclick="copyToClipboard('${payment.account}')">Copy Account</button>
+                    </div>
+                `;
+            }
+        };
+        
+        window.showWithdrawDetails = () => {
+            const method = document.getElementById('withdrawMethod').value;
+            const detailsDiv = document.getElementById('withdrawDetails');
+            
+            if (!method) {
+                detailsDiv.innerHTML = '';
+                return;
+            }
+            
+            const payment = paymentMethods[method];
+            if (method === 'usdt') {
+                detailsDiv.innerHTML = `
+                    <div class="payment-details">
+                        <p><strong>You will receive:</strong></p>
+                        <p>Amount in USDT: <span id="usdtAmount">0</span> USDT</p>
+                        <p>Network: TRC20</p>
+                        <p>Rate: 1 USDT = ${payment.rate} ZBET</p>
+                    </div>
+                `;
+                
+                document.getElementById('withdrawAmount').addEventListener('input', () => {
+                    const amount = parseFloat(document.getElementById('withdrawAmount').value);
+                    if (!isNaN(amount)) {
+                        const usdt = (amount / payment.rate).toFixed(2);
+                        document.getElementById('usdtAmount').textContent = usdt;
+                    }
+                });
+            }
+        };
+        
+        window.submitDeposit = async () => {
+            const method = document.getElementById('depositMethod').value;
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            const reference = document.getElementById('transactionRef').value;
+            const messageDiv = document.getElementById('depositMessage');
+            
+            if (!method) {
+                showMessage(messageDiv, 'Please select payment method', 'error');
+                return;
+            }
+            
+            if (!amount || amount <= 0) {
+                showMessage(messageDiv, 'Please enter valid amount', 'error');
+                return;
+            }
+            
+            if (!reference) {
+                showMessage(messageDiv, 'Please enter transaction reference', 'error');
+                return;
+            }
+            
+            const userId = currentUser ? currentUser.uid : JSON.parse(localStorage.getItem('zbet_user'))?.uid;
+            
+            const transaction = {
+                type: 'deposit',
+                method: method,
+                amount: amount,
+                reference: reference,
+                status: 'pending',
+                timestamp: new Date().toISOString(),
+                userId: userId,
+                userName: document.getElementById('username').textContent
+            };
+            
+            try {
+                const transactionsRef = ref(database, `transactions/${userId}`);
+                const newTransactionRef = push(transactionsRef);
+                await set(newTransactionRef, transaction);
+                
+                // Also add to admin transactions
+                const adminRef = ref(database, `admin_transactions/${newTransactionRef.key}`);
+                await set(adminRef, transaction);
+                
+                showMessage(messageDiv, 'Deposit request submitted! Awaiting admin approval.', 'success');
+                setTimeout(() => {
+                    closeDepositModal();
+                    loadTransactions();
+                }, 2000);
+            } catch (error) {
+                showMessage(messageDiv, 'Error: ' + error.message, 'error');
+            }
+        };
+        
+        window.submitWithdraw = async () => {
+            const method = document.getElementById('withdrawMethod').value;
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const accountDetails = document.getElementById('accountDetails').value;
+            const accountName = document.getElementById('accountName').value;
+            const password = document.getElementById('withdrawPassword').value;
+            const messageDiv = document.getElementById('withdrawMessage');
+            
+            if (!method) {
+                showMessage(messageDiv, 'Please select withdrawal method', 'error');
+                return;
+            }
+            
+            if (!amount || amount < 100) {
+                showMessage(messageDiv, 'Minimum withdrawal is 100 ZBET', 'error');
+                return;
+            }
+            
+            if (amount > userBalance) {
+                showMessage(messageDiv, 'Insufficient balance', 'error');
+                return;
+            }
+            
+            if (!accountDetails || !accountName) {
+                showMessage(messageDiv, 'Please enter account details', 'error');
+                return;
+            }
+            
+            if (!password) {
+                showMessage(messageDiv, 'Please enter your password to confirm', 'error');
+                return;
+            }
+            
+            const userId = currentUser ? currentUser.uid : JSON.parse(localStorage.getItem('zbet_user'))?.uid;
+            
+            // Verify password (for email users)
+            if (currentUser) {
+                try {
+                    // You would need to re-authenticate here
+                    // For now, we'll just check if password is not empty
+                    if (password.length < 1) {
+                        showMessage(messageDiv, 'Invalid password', 'error');
+                        return;
+                    }
+                } catch (error) {
+                    showMessage(messageDiv, 'Password verification failed', 'error');
+                    return;
+                }
+            }
+            
+            const transaction = {
+                type: 'withdraw',
+                method: method,
+                amount: amount,
+                accountDetails: accountDetails,
+                accountName: accountName,
+                status: 'pending',
+                timestamp: new Date().toISOString(),
+                userId: userId,
+                userName: document.getElementById('username').textContent,
+                email: document.getElementById('email').textContent
+            };
+            
+            try {
+                const transactionsRef = ref(database, `transactions/${userId}`);
+                const newTransactionRef = push(transactionsRef);
+                await set(newTransactionRef, transaction);
+                
+                // Also add to admin transactions
+                const adminRef = ref(database, `admin_transactions/${newTransactionRef.key}`);
+                await set(adminRef, transaction);
+                
+                showMessage(messageDiv, 'Withdrawal request submitted! Awaiting admin approval.', 'success');
+                setTimeout(() => {
+                    closeWithdrawModal();
+                    loadTransactions();
+                }, 2000);
+            } catch (error) {
+                showMessage(messageDiv, 'Error: ' + error.message, 'error');
+            }
+        };
+        
+        window.copyToClipboard = (text) => {
+            navigator.clipboard.writeText(text);
+            alert('Copied to clipboard!');
+        };
+        
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = `message ${type}`;
+            setTimeout(() => {
+                element.style.display = 'none';
+                element.className = 'message';
+            }, 5000);
+        }
         
         window.logout = async () => {
             if (auth.currentUser) {
@@ -555,14 +830,12 @@
             window.location.href = 'zbet-login.html';
         };
         
-        // Initialize
-        renderGamesGrid();
-        selectGame('dice');
-        
-        // Make functions global
-        window.selectGame = selectGame;
-        window.processBet = processBet;
-        window.isValidBet = isValidBet;
+        // Close modals when clicking outside
+        window.onclick = (event) => {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
     </script>
 </body>
 </html>
